@@ -18,6 +18,51 @@ class TodoViewModel(private val repository: TodoRepository) : ViewModel() {
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
 
+    private val initialFallbackTodos = listOf(
+        Todo(
+            id = "1a2b3c4d-1111-aaaa-bbbb-000000000001",
+            title = "Pagar servicios",
+            description = "Pagar la factura de luz, agua e internet antes del viernes.",
+            done = false
+        ),
+        Todo(
+            id = "1a2b3c4d-1111-aaaa-bbbb-000000000002",
+            title = "Llamar al médico",
+            description = "Agendar cita para chequeo general.",
+            done = false
+        ),
+        Todo(
+            id = "1a2b3c4d-1111-aaaa-bbbb-000000000003",
+            title = "Limpiar escritorio",
+            description = "Organizar papeles y limpiar el polvo.",
+            done = true
+        ),
+        Todo(
+            id = "1a2b3c4d-1111-aaaa-bbbb-000000000004",
+            title = "Revisar presupuesto",
+            description = "Actualizar gastos del mes en la hoja de cálculo.",
+            done = false
+        ),
+        Todo(
+            id = "1a2b3c4d-1111-aaaa-bbbb-000000000005",
+            title = "Practicar inglés",
+            description = "Ver un episodio de serie en inglés con subtítulos.",
+            done = true
+        ),
+        Todo(
+            id = "1a2b3c4d-1111-aaaa-bbbb-000000000006",
+            title = "Actualizar CV",
+            description = "Agregar experiencia reciente y nuevos cursos.",
+            done = false
+        ),
+        Todo(
+            id = "1a2b3c4d-1111-aaaa-bbbb-000000000007",
+            title = "Armar lista de compras",
+            description = "Preparar lista para ir al mercado el sábado.",
+            done = true
+        )
+    )
+
     fun loadTodos() {
         viewModelScope.launch {
             _loading.value = true
@@ -27,7 +72,7 @@ class TodoViewModel(private val repository: TodoRepository) : ViewModel() {
             } catch (e: Exception) {
                 Log.e("TodoViewModel", e.message.toString())
                 if (_todos.value.isEmpty()) {
-                    _todos.value = emptyList()
+                    _todos.value = initialFallbackTodos
                 }
             } finally {
                 _loading.value = false
