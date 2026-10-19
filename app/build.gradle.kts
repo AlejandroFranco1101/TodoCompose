@@ -55,4 +55,10 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // Retrofit para hacer peticiones HTTP
+    implementation(libs.retrofit)
+
+    // Convertidor Gson para convertir el JSON a objetos Kotlin
+    implementation(libs.converter.gson)
 }
