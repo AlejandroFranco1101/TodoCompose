@@ -5,7 +5,7 @@ import retrofit2.http.*
 
 interface TodoApiService {
 
-    @GET("/to-do")
+    @GET("to-do")
     suspend fun getTodos(): List<Todo>
 
 }
