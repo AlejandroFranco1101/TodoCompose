@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -12,20 +13,35 @@ import com.example.todocompose.data.model.Todo
 import java.util.UUID
 
 @Composable
-fun TodoList(todos: List<Todo>) {
+fun TodoList(
+    todos: List<Todo>,
+    onToggleDone: (Todo) -> Unit = {},
+    onEditClick: (Todo) -> Unit = {},
+    onDeleteClick: (Todo) -> Unit = {}
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(todos) { todo ->
-            TodoItem(todo = todo)
+        items(todos, key = { it.id }) { todo ->
+            TodoItem(
+                todo = todo,
+                onToggleDone = { onToggleDone(todo) },
+                onEditClick = { onEditClick(todo) },
+                onDeleteClick = { onDeleteClick(todo) }
+            )
         }
     }
 }
 
 @Composable
-fun TodoItem(todo: Todo) {
+fun TodoItem(
+    todo: Todo,
+    onToggleDone: () -> Unit = {},
+    onEditClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {}
+) {
     Card(
         elevation = CardDefaults.cardElevation(4.dp),
         modifier = Modifier
@@ -35,17 +51,25 @@ fun TodoItem(todo: Todo) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = "ID: ${todo.id}",
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.weight(1f)
                 )
-                Text(
-                    text = if (todo.done) "Completada" else "",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = if (todo.done) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = if (todo.done) "Completada" else "Pendiente",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = if (todo.done) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+                    )
+                    Checkbox(
+                        checked = todo.done,
+                        onCheckedChange = { onToggleDone() }
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -61,6 +85,29 @@ fun TodoItem(todo: Todo) {
                 text = "Descripcion: ${todo.description}",
                 style = MaterialTheme.typography.bodySmall
             )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                OutlinedButton(
+                    onClick = onEditClick,
+                    modifier = Modifier.padding(end = 8.dp)
+                ) {
+                    Text("Modificar")
+                }
+
+                Button(
+                    onClick = onDeleteClick,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Eliminar")
+                }
+            }
         }
     }
 }
